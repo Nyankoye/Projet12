@@ -1,0 +1,37 @@
+{% extends 'crm/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section col-md-10 p-4">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Modification d'un Evenement</legend>
+                <div class="form-row">
+                  <div class="form-group col-md-6 mb-0">
+                    {{ form.client|as_crispy_field }}
+                  </div>
+                  <div class="form-group col-md-6 mb-0">
+                    {{ form.user|as_crispy_field }}
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-4 mb-0">
+                    {{ form.contract|as_crispy_field }}
+                  </div>
+                  <div class="form-group col-md-4 mb-0">
+                        {{ form.event_date|as_crispy_field }}
+                  </div>
+                  <div class="form-group col-md-4 mb-0">
+                    {{ form.attendees|as_crispy_field }}
+                  </div>
+                </div>
+                <div class="form-group mb-0">
+                    {{ form.note|as_crispy_field }}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Modifier</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

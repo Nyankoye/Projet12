@@ -1,0 +1,30 @@
+{% extends 'crm/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="col col-md-8">
+        <div class="form-group border-top pt-3">
+            <a class="btn btn-outline-info" href=" {%url 'clients_update' id=client.id %}">Modifier</a>
+        </div>
+    </div>
+    <div class="content-section col-md-8">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">À propos de moi</legend>
+            <div class="form-row">
+              <div class="form-group col-md-6 mb-0">
+                {{ client.first_name }}
+              </div>
+              <div class="form-group col-md-6 mb-0">
+                {{ client.last_name }}
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6 mb-0">
+                {{ client.username }}
+              </div>
+              <div class="form-group col-md-6 mb-0">
+                {{ client.email }}
+              </div>
+            </div>
+        </fieldset>
+    </div>
+{% endblock content %}

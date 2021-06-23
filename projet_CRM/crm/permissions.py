@@ -13,14 +13,28 @@ class OnlyTeamManagement:
             raise PermissionDenied
 
 
-class OnlyOwnerOrSupport:
+class OnlyOwnerOrManagementTeam:
     """
-        Cette classe nous permet de n'autoriser que les utilisateurs
+        Cette classe nous permet de n'autoriser que la personne qui à créer
     """
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
-        if obj.user != self.request.user:
+        if request.user.team.name == 'Equipe Gestion':
+            return super().dispatch(request, *args, **kwargs)
+        elif obj.user != self.request.user:
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
+
+
+class OnlyCreatedByAndSupport:
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if request.user.team.name == 'Equipe Gestion':
+            return super().dispatch(request, *args, **kwargs)
+        elif obj.contract.user == self.request.user:
+            return super().dispatch(request, *args, **kwargs)
+        elif obj.user != self.request.user:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)
 
@@ -37,13 +51,16 @@ class OnlySaleOrManagementTeam:
             raise PermissionDenied
 
 
-class OnlySaleOrManagementTeamCanDelete:
+class OnlyOwnerOrManagementTeamCanDelete:
     """
-        Cette classe nous permet de n'autoriser que les membre de l'equipe Vente et Gestion
+        Cette classe nous permet de n'autoriser que le membre de l'equipe Vente qui à créer, tous les membre de l'equipe
+        Gestion  et la personne de l'équipe support assignée.
     """
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
-        if obj.contract.user != self.request.user or obj.user.team.name == 'Equipe Gestion':
+        if self.request.user.team.name == 'Equipe Gestion':
+            return super().dispatch(request, *args, **kwargs)
+        elif obj.contract.user != self.request.user:
             raise PermissionDenied
         return super().dispatch(request, *args, **kwargs)

@@ -7,8 +7,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import UserForm, UserUpdateForm, ClientForm, ContractForm, EventForm
-from .permissions import OnlyTeamManagement, OnlyOwnerOrSupport, OnlySaleOrManagementTeam, \
-    OnlySaleOrManagementTeamCanDelete
+from .permissions import OnlyTeamManagement, OnlyOwnerOrManagementTeam, OnlySaleOrManagementTeam, \
+    OnlyOwnerOrManagementTeamCanDelete, OnlyCreatedByAndSupport
 from .models import User, Client, Contract, Event
 
 
@@ -23,6 +23,9 @@ class UsersListView(LoginRequiredMixin, OnlyTeamManagement, ListView):
     paginate_by = 5
     context_object_name = 'users'
     template_name = 'crm/users.html'
+
+    def get_queryset(self):
+        return User.objects.all().order_by('-id')
 
 
 class UserProfileView(LoginRequiredMixin, OnlyTeamManagement, DetailView):
@@ -101,8 +104,11 @@ class ClientListView(LoginRequiredMixin, ListView):
     paginate_by = 5
     template_name = 'crm/clients.html'
 
+    def get_queryset(self):
+        return Client.objects.all().order_by('-date_updated')
 
-class ClientUpdateView(LoginRequiredMixin, OnlyOwnerOrSupport, SuccessMessageMixin, UpdateView):
+
+class ClientUpdateView(LoginRequiredMixin, OnlyOwnerOrManagementTeam, SuccessMessageMixin, UpdateView):
     form_class = ClientForm
     template_name = 'crm/update_client.html'
     success_url = reverse_lazy('clients')
@@ -112,7 +118,7 @@ class ClientUpdateView(LoginRequiredMixin, OnlyOwnerOrSupport, SuccessMessageMix
         return Client.objects.get(id=self.kwargs.get("id"))
 
 
-class ClientDeleteView(SuccessMessageMixin, OnlyOwnerOrSupport, LoginRequiredMixin, DeleteView):
+class ClientDeleteView(SuccessMessageMixin, OnlyOwnerOrManagementTeam, LoginRequiredMixin, DeleteView):
     model = Client
     success_url = reverse_lazy('clients')
     success_message = "Les informations du client ont été supprimées"
@@ -143,8 +149,11 @@ class ContractListView(LoginRequiredMixin, ListView):
     template_name = 'crm/contracts.html'
     paginate_by = 5
 
+    def get_queryset(self):
+        return Contract.objects.all().order_by('-date_updated')
 
-class ContractUpdateView(OnlySaleOrManagementTeam, SuccessMessageMixin, LoginRequiredMixin, UpdateView):
+
+class ContractUpdateView(OnlyOwnerOrManagementTeam, SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     form_class = ContractForm
     template_name = 'crm/update_contract.html'
     success_url = reverse_lazy('contracts')
@@ -154,7 +163,7 @@ class ContractUpdateView(OnlySaleOrManagementTeam, SuccessMessageMixin, LoginReq
         return Contract.objects.get(id=self.kwargs.get("id"))
 
 
-class ContractDeleteView(OnlySaleOrManagementTeam, SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+class ContractDeleteView(OnlyOwnerOrManagementTeam, SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     model = Contract
     success_url = reverse_lazy('contracts')
     success_message = "Le contrat à été Supprimé"
@@ -179,7 +188,7 @@ class EventCreateView(OnlySaleOrManagementTeam, LoginRequiredMixin, SuccessMessa
     success_message = "L'evenement à été créer"
 
 
-class EventListView(LoginRequiredMixin, ListView):
+class EventListView(SuccessMessageMixin, LoginRequiredMixin, ListView):
     model = Event
     template_name = 'crm/events.html'
     paginate_by = 5
@@ -187,12 +196,12 @@ class EventListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.team.name == 'Equipe Support':
-            return Event.objects.filter(user=self.request.user)
+            return Event.objects.filter(user=self.request.user).order_by('-date_updated')
         else:
-            return Event.objects.all()
+            return Event.objects.all().order_by('-date_updated')
 
 
-class EventUpdateView(SuccessMessageMixin, OnlyOwnerOrSupport, LoginRequiredMixin, UpdateView):
+class EventUpdateView(SuccessMessageMixin, OnlyCreatedByAndSupport , LoginRequiredMixin, UpdateView):
     form_class = EventForm
     template_name = 'crm/update_event.html'
     success_url = reverse_lazy('events')
@@ -202,7 +211,7 @@ class EventUpdateView(SuccessMessageMixin, OnlyOwnerOrSupport, LoginRequiredMixi
         return Event.objects.get(id=self.kwargs.get("id"))
 
 
-class EventDeleteView(SuccessMessageMixin, OnlySaleOrManagementTeamCanDelete, LoginRequiredMixin, DeleteView):
+class EventDeleteView(SuccessMessageMixin, OnlyOwnerOrManagementTeamCanDelete, LoginRequiredMixin, DeleteView):
     model = Event
     success_url = reverse_lazy('events')
     success_message = "Suppression  Réussies"

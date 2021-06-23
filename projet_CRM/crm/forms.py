@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from .models import Client, User, Contract, Team, Event
 
 
@@ -37,7 +37,8 @@ class ContractForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ContractForm, self).__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.filter(team__name='Equipe Vente')
+        self.fields['user'].queryset = User.objects.filter(team__name='Equipe Vente') | User.objects.filter(
+            team__name='Equipe Gestion')
         self.fields['user'].label = 'Commercial'
 
     payment_due = forms.DateTimeField(label='Echéance de payement',
@@ -62,6 +63,8 @@ class EventForm(forms.ModelForm):
         super(EventForm, self).__init__(*args, **kwargs)
         self.fields['user'].queryset = User.objects.filter(team__name='Equipe Support')
         self.fields['user'].label = 'Gérer par'
+        self.fields['contract'].queryset = Contract.objects.filter(status=True)
+        self.fields['contract'].label = 'Contrat'
 
     event_date = forms.DateTimeField(label='Date Evenement',
                                      widget=forms.DateTimeInput(

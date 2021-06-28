@@ -15,7 +15,7 @@ Veuillez trouver la documentation de l'api sur le lien suivant [API-REST](https:
  DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', # on utilise l'adaptateur postgresql
-        'NAME': 'disquaire', # le nom de notre base de donnees creee precedemment
+        'NAME': 'disquaire', # le nom de votre base de donnees creee precedemment
         'USER': 'celinems', # attention : remplacez par votre nom d'utilisateur
         'PASSWORD': '',
         'HOST': '',

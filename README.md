@@ -23,7 +23,9 @@ Veuillez trouver la documentation de l'api sur le lien suivant [API-REST](https:
     }
 }
 ```
- 7. Déplacez-vous  dans le fichier soft_desk en utilisant la commande : <code>$ cd projet_CRM </code>
+ 7. Déplacez-vous dans le fichier projet_CRM en utilisant la commande : <code>$ cd projet_CRM </code>
  8. Charger le contenu de la base de données en utilisant la commande : <code>$ python manage.py migrate </code>
- 9. Lancer le serveur en utilisant la commande : <code>$ python manage.py runserver </code>
- 10. Vous pouvez maintenant utiliser l'API en utilisant [postman desktop agent](https://www.postman.com/downloads/) et en suivant les intructions dans la [documentation](https://documenter.getpostman.com/view/14846551/TzefBPft)
+ 9. Créer un supper utilisateur avec la commande: <code>$ python manage.py createsuperuser</code>
+ 10. Créer les Equipes: Equipe Gestion, Equipe Support et Equipe Vente dans la table Equipe.
+ 11. Lancer le serveur en utilisant la commande : <code>$ python manage.py runserver </code>
+ 12. Vous pouvez maintenant utiliser l'API en utilisant [postman desktop agent](https://www.postman.com/downloads/) et en suivant les intructions dans la [documentation](https://documenter.getpostman.com/view/14846551/TzefBPft) ou utilisé l'application CRM.
